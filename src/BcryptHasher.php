@@ -26,7 +26,7 @@ class BcryptHasher extends OriginalHasher
      */
     public function make($value, array $options = []): string
     {
-        return $this->prefix . parent::make($value, $options);
+        return $this->prefix . parent::make(hash('sha256', $value), $options);
     }
 
     /**
@@ -43,7 +43,7 @@ class BcryptHasher extends OriginalHasher
             return false;
         }
 
-        return password_verify($value, $this->removePrefix($hashedValue));
+        return password_verify(hash('sha256', $value), $this->removePrefix($hashedValue));
     }
 
     /**
