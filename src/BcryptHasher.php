@@ -47,17 +47,26 @@ class BcryptHasher extends OriginalHasher
             return false;
         }
 
-        return password_verify(hash('sha256', $value), $this->removePrefix($hashedValue));
+        if ($this->hasPrefix($hashedValue)) {
+            $value = hash('sha256', $value);
+        }
+
+        return password_verify($value, $this->removePrefix($hashedValue));
     }
 
 
     private function removePrefix(string $hashedValue): string
     {
-        if (strpos($hashedValue, $this->prefix) !== false) {
+        if ($this->hasPrefix($hashedValue)) {
             $hashedValue = substr($hashedValue, strlen($this->prefix));
         }
 
         return $hashedValue;
+    }
+
+    private function hasPrefix(string $string): bool
+    {
+        return (bool) strpos($string, $this->prefix);
     }
 
 
@@ -71,7 +80,7 @@ class BcryptHasher extends OriginalHasher
      */
     public function needsRehash($hashedValue, array $options = []): bool
     {
-        if (strpos($hashedValue, $this->prefix) === false) {
+        if (!$this->hasPrefix($hashedValue)) {
             return true;
         }
 
