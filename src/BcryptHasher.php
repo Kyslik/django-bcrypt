@@ -55,6 +55,26 @@ class BcryptHasher extends OriginalHasher
     }
 
 
+    /**
+     * Check if string has prefix
+     *
+     * @param string $string
+     *
+     * @return bool
+     */
+    private function hasPrefix(string $string): bool
+    {
+        return (bool)strpos($string, $this->prefix);
+    }
+
+
+    /**
+     * Removes prefix from string
+     *
+     * @param string $hashedValue
+     *
+     * @return string
+     */
     private function removePrefix(string $hashedValue): string
     {
         if ($this->hasPrefix($hashedValue)) {
@@ -62,11 +82,6 @@ class BcryptHasher extends OriginalHasher
         }
 
         return $hashedValue;
-    }
-
-    private function hasPrefix(string $string): bool
-    {
-        return (bool) strpos($string, $this->prefix);
     }
 
 
@@ -80,7 +95,7 @@ class BcryptHasher extends OriginalHasher
      */
     public function needsRehash($hashedValue, array $options = []): bool
     {
-        if (!$this->hasPrefix($hashedValue)) {
+        if ( ! $this->hasPrefix($hashedValue)) {
             return true;
         }
 
